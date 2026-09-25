@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lavie Zanzuri — Projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F6F6F3;
+    --ink: #15171C;
+    --muted: #5E6470;
+    --line: #D9DAD4;
+    --accent: #2F4BE0;
+    --row-hover: #ECEDE7;
+    --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+    --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14161B; --ink: #ECECE6; --muted: #9AA0AB;
+      --line: #2A2E36; --accent: #8C9CFF; --row-hover: #1C1F26;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 400 1.0625rem/1.6 var(--body);
+    padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0);
+  }
+  a { color: inherit; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .wrap { max-width: 64rem; margin: 0 auto; padding: 0 1.5rem; }
+
+  header { padding: clamp(4rem, 12vw, 9rem) 0 3rem; }
+  h1 {
+    font: 800 clamp(3.2rem, 13vw, 8.5rem)/0.88 var(--display);
+    letter-spacing: -0.045em;
+  }
+  h1 span { display: block; color: var(--accent); }
+  .intro { max-width: 34rem; margin-top: 2rem; color: var(--muted); font-size: 1.15rem; }
+  .links { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .links a { font-weight: 500; text-underline-offset: 4px; }
+  .links a:hover { color: var(--accent); }
+
+  main { padding-bottom: 5rem; }
+  h2 {
+    font: 700 1.5rem/1.2 var(--display); letter-spacing: -0.01em;
+    padding-bottom: 1rem; border-bottom: 2px solid var(--ink);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  h2 small { font: 400 0.95rem var(--body); color: var(--muted); }
+
+  .project {
+    display: grid; grid-template-columns: 1fr auto; gap: 0.25rem 2rem;
+    padding: 1.5rem 0.75rem; border-bottom: 1px solid var(--line);
+    text-decoration: none; transition: background .15s;
+  }
+  .project:hover { background: var(--row-hover); }
+  .project h3 { font: 700 1.4rem/1.25 var(--display); }
+  .project p { color: var(--muted); max-width: 40rem; grid-column: 1; }
+  .meta { grid-column: 2; grid-row: 1 / span 2; text-align: right; color: var(--muted); font-size: 0.9rem; white-space: nowrap; }
+  .meta .lang { color: var(--ink); font-weight: 500; }
+  .demo { font-size: 0.9rem; color: var(--accent); font-weight: 500; }
+  .status { padding: 2rem 0; color: var(--muted); }
+
+  footer { padding: 2rem 0 3rem; color: var(--muted); font-size: 0.9rem; }
+
+  @media (max-width: 600px) {
+    .project { grid-template-columns: 1fr; padding: 1.25rem 0.25rem; }
+    .meta { grid-column: 1; grid-row: auto; text-align: left; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Lavie<span>Zanzuri</span></h1>
+      <!-- ✏️ Edit this paragraph to describe yourself -->
+      <p class="intro">Computer science student building tools with code, data and AI. Here's what I've been working on.</p>
+      <div class="links">
+        <a href="https://github.com/Lavie-Zanzuri">GitHub</a>
+        <!-- ✏️ Add your own links -->
+        <a href="mailto:you@example.com">Email</a>
+        <a href="https://www.linkedin.com/">LinkedIn</a>
+      </div>
+    </header>
+
+    <main>
+      <h2>Projects <small id="count"></small></h2>
+      <div id="projects"><p class="status">Loading projects from GitHub…</p></div>
+    </main>
+
+    <footer>Projects load automatically from my public GitHub repositories.</footer>
+  </div>
+
+<script>
+  const USER = "Lavie-Zanzuri";
+
+  // Repos to hide from the list
+  const HIDE = [USER + ".github.io"];
+
+  // Used only if the GitHub API is unavailable
+  const FALLBACK = [
+    { name: "Gmail-AI-helper" },
+    { name: "Escape-the-Query-Room" },
+    { name: "Exercise-3--Creating-your-own-VS-code-plugin" },
+    { name: "hw4_Lavie_Zanzuri" }
+  ];
+
+  const pretty = n => n.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  function render(repos) {
+    const list = repos.filter(r => !r.fork && !HIDE.includes(r.name));
+    document.getElementById("count").textContent = list.length + " repositories";
+    document.getElementById("projects").innerHTML = list.map(r => {
+      const url = r.html_url || `https://github.com/${USER}/${r.name}`;
+      const date = r.pushed_at ? new Date(r.pushed_at).toLocaleDateString("en-GB", { month: "short", year: "numeric" }) : "";
+      return `
+        <a class="project" href="${esc(url)}">
+          <h3>${esc(pretty(r.name))}</h3>
+          <div class="meta">
+            ${r.language ? `<div class="lang">${esc(r.language)}</div>` : ""}
+            ${date ? `<div>Updated ${date}</div>` : ""}
+          </div>
+          <p>${esc(r.description || "Open the repository to learn more.")}</p>
+          ${r.homepage ? `<span class="demo">Live demo available</span>` : ""}
+        </a>`;
+    }).join("");
+  }
+
+  fetch(`https://api.github.com/users/${USER}/repos?sort=pushed&per_page=100`)
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(() => render(FALLBACK));
+</script>
+</body>
+</html>
