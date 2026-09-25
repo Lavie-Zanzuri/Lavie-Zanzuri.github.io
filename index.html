@@ -85,11 +85,9 @@
     </header>
 
     <main>
-      <h2>Projects <small id="count"></small></h2>
+      <h2>Projects</h2>
       <div id="projects"><p class="status">Loading projects from GitHub…</p></div>
     </main>
-
-    <footer>Projects load automatically from my public GitHub repositories.</footer>
   </div>
 
 <script>
@@ -111,7 +109,6 @@
 
   function render(repos) {
     const list = repos.filter(r => !r.fork && !HIDE.includes(r.name));
-    document.getElementById("count").textContent = list.length + " repositories";
     document.getElementById("projects").innerHTML = list.map(r => {
       const url = r.html_url || `https://github.com/${USER}/${r.name}`;
       const date = r.pushed_at ? new Date(r.pushed_at).toLocaleDateString("en-GB", { month: "short", year: "numeric" }) : "";
