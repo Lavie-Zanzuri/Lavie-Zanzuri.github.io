@@ -62,8 +62,6 @@
   .project p { color: var(--muted); max-width: 40rem; }
   .meta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; color: var(--muted); font-size: 0.9rem; }
   .meta .lang { color: var(--ink); font-weight: 500; }
-  .project h3 a { text-decoration: none; }
-  .project h3 a:hover { color: var(--accent); }
   .actions { display: flex; gap: 1.25rem; justify-content: center; flex-wrap: wrap; margin-top: 0.25rem; }
   .actions a { font-size: 0.95rem; font-weight: 500; color: var(--accent); text-underline-offset: 4px; }
   .status { padding: 2rem 0; color: var(--muted); }
@@ -123,7 +121,7 @@
       const isVideo = /youtu\.?be|vimeo|drive\.google|loom/i.test(r.homepage || "");
       return `
         <div class="project">
-          <h3><a href="${esc(url)}" target="_blank" rel="noopener">${esc(pretty(r.name))}</a></h3>
+          <h3>${esc(pretty(r.name))}</h3>
           <div class="meta">
             ${r.language ? `<div class="lang">${esc(r.language)}</div>` : ""}
             ${date ? `<div>Updated ${date}</div>` : ""}
