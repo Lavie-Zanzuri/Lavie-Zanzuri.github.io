@@ -117,15 +117,10 @@
     const list = repos.filter(r => !r.fork && !HIDE.includes(r.name));
     document.getElementById("projects").innerHTML = list.map(r => {
       const url = r.html_url || `https://github.com/${USER}/${r.name}`;
-      const date = r.pushed_at ? new Date(r.pushed_at).toLocaleDateString("en-GB", { month: "short", year: "numeric" }) : "";
       const isVideo = /youtu\.?be|vimeo|drive\.google|loom/i.test(r.homepage || "");
       return `
         <div class="project">
           <h3>${esc(pretty(r.name))}</h3>
-          <div class="meta">
-            ${r.language ? `<div class="lang">${esc(r.language)}</div>` : ""}
-            ${date ? `<div>Updated ${date}</div>` : ""}
-          </div>
           <p>${esc(r.description || "Open the repository to learn more.")}</p>
           <div class="actions">
             <a href="${esc(url)}" target="_blank" rel="noopener">View code</a>
