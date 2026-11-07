@@ -113,8 +113,19 @@
   const pretty = n => n.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+  // Pinned projects: these appear first, in this order.
+  // All other repos follow, most recently updated first.
+  const ORDER = [
+    "Escape-the-Query-Room",
+    "Cloud-Based-Microservices-Application-with-CI-CD-Automation"
+  ];
+  const norm = n => String(n).toLowerCase().replace(/[-_\s]+/g, "");
+  const rank = n => { const i = ORDER.map(norm).indexOf(norm(n)); return i === -1 ? ORDER.length : i; };
+
   function render(repos) {
-    const list = repos.filter(r => !r.fork && !HIDE.includes(r.name));
+    const list = repos
+      .filter(r => !r.fork && !HIDE.includes(r.name))
+      .sort((a, b) => rank(a.name) - rank(b.name));
     document.getElementById("projects").innerHTML = list.map(r => {
       const url = r.html_url || `https://github.com/${USER}/${r.name}`;
       const isVideo = /youtu\.?be|vimeo|drive\.google|loom/i.test(r.homepage || "");
